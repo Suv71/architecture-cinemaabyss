@@ -1,0 +1,94 @@
+@startuml
+
+title Диаграмма контейнеров "Кинобездна" (Задание 1)
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+Person(User, "Пользователь", "Пользователь Кинобездны")
+
+Container_Boundary(cinemabyss, "Кинобездна") {
+  Container(MobileApp, "Mobile Application", "Kotlin", "Мобильное приложение")
+  Container(WebApp, "Web Application", "ASP.NET Core", "Веб приложение")
+  Container(SmartTvApp, "Smart TV Application", "Kotlin", "Приложение для телевизоров")
+
+
+  Container(MobileAppBff, "Mobile Application BFF", "Kotlin", "BFF для мобильного приложения")
+  Container(WebAppBff, "Web Application BFF", "ASP.NET Core", "BFF для веб приложения")
+  Container(SmartTvAppBff, "Smart TV Application BFF", "Kotlin", "BFF для приложение телевизоров")
+
+  Container(UsersService, "Users service", "Go", "Управляет взаимодействием с пользователями")
+  Container(MoviesService, "Movies service", "Go", "Отвечает за взаимодействие с фильмами")
+  Container(MetadataService, "Metadata service", "Go", "Управляет метаданными фильмов")
+  Container(PaymentsService, "Payments service", "Go", "Управляет платежами")
+  Container(SubscriptionsService, "Subscriptions service", "Go", "Управляет подписками пользователей")
+  Container(DiscountsService, "Discounts service", "Go", "Управляет скидками")
+
+  Container(UsersDatabase, "Users database", "PostgreSQL", "Хранит инфорацию о пользователях")
+  Container(MoviesDatabase, "Movies database", "PostgreSQL", "Хранит инфорацию о фильмах")
+  Container(MetadataDatabase, "Metadata database", "MongoDB", "Хранит метаданные фильмов")
+  Container(PaymentsDatabase, "Payments database", "PostgreSQL", "Хранит инфорацию о платежах")
+  Container(SubscriptionsDatabase, "Subscriptions database", "PostgreSQL", "Хранит инфорацию о подписках")
+  Container(DiscountsDatabase, "Discounts database", "PostgreSQL", "Хранит инфорация о скидках")
+
+  Container(MessageBroker, "Message Broker", "Kafka", "Брокер сообщений Kafka")
+}
+
+
+System_Ext(S3, "S3", "S3 хранилище для видео файлов")
+System_Ext(PaymentsSystems, "Payments systems", "Платежные системы")
+System_Ext(RecomendationSystem, "Recomendation system", "Рекомендательная система")
+System_Ext(OnlineCinemas, "Online cinemas", "Онлайн кинотеатры")
+
+Rel(User, MobileApp, "Получает доступ к функционалу Кинобездны через мобильное приложение")
+Rel(User, WebApp, "Получает доступ к функционалу Кинобездны через веб приложение")
+Rel(User, SmartTvApp, "Получает доступ к функционалу Кинобездны через SmartTV приложение")
+
+Rel(MobileApp, MobileAppBff, "Получает и передает информацию через специализированный BFF")
+Rel(WebApp, WebAppBff, "Получает и передает информацию через специализированный BFF")
+Rel(SmartTvApp, SmartTvAppBff, "Получает и передает информацию через специализированный BFF")
+
+Rel(MobileAppBff, UsersService, "Регистрирует и авторизует пользователей")
+Rel(MobileAppBff, MoviesService, "Получает информацию о фильмах")
+Rel(MobileAppBff, MetadataService, "Получает информацию о метаданных фильмов")
+Rel(MobileAppBff, PaymentsService, "Осуществляет платежи и показывает инфрмацию о них")
+Rel(MobileAppBff, SubscriptionsService, "Оформляет подписки и получает о них информацию")
+Rel(MobileAppBff, DiscountsService, "Получает информацию о скидках")
+
+Rel(WebAppBff, UsersService, "Регистрирует и авторизует пользователей")
+Rel(WebAppBff, MoviesService, "Получает информацию о фильмах")
+Rel(WebAppBff, MetadataService, "Получает информацию о метаданных фильмов")
+Rel(WebAppBff, PaymentsService, "Осуществляет платежи и показывает инфрмацию о них")
+Rel(WebAppBff, SubscriptionsService, "Оформляет подписки и получает о них информацию")
+Rel(WebAppBff, DiscountsService, "Получает информацию о скидках")
+
+Rel(SmartTvAppBff, UsersService, "Регистрирует и авторизует пользователей")
+Rel(SmartTvAppBff, MoviesService, "Получает информацию о фильмах")
+Rel(SmartTvAppBff, MetadataService, "Получает информацию о метаданных фильмов")
+Rel(SmartTvAppBff, PaymentsService, "Осуществляет платежи и показывает инфрмацию о них")
+Rel(SmartTvAppBff, SubscriptionsService, "Оформляет подписки и получает о них информацию")
+Rel(SmartTvAppBff, DiscountsService, "Получает информацию о скидках")
+
+Rel(UsersService, UsersDatabase, "Записывает и получает данные о пользователях")
+Rel(MoviesService, MoviesDatabase, "Хранит информацию о фильмах")
+Rel(MetadataService, MetadataDatabase, "Хранит информацию о метаданных фильмов")
+Rel(PaymentsService, PaymentsDatabase, "Хранит информацию о платежах пользователей")
+Rel(SubscriptionsService, SubscriptionsDatabase, "Хранит информацию о подписках пользователей")
+Rel(DiscountsService, DiscountsDatabase, "Хранит информацию о скидках")
+
+Rel(MoviesService, S3, "Хранит видеофайлы фильмов")
+Rel(PaymentsService, PaymentsSystems, "Взаимодействует с внешними платежными системами")
+Rel(MoviesService, OnlineCinemas, "Получает информацию от онлайн-кинотеатров")
+
+Rel(MoviesService, MessageBroker, "Отправляет запросы в рекомендательную систему")
+Rel(MessageBroker, RecomendationSystem, "Получает запросы на рекомендации")
+Rel(RecomendationSystem, MessageBroker, "Отправляет рекомендации для пользователей")
+Rel(MessageBroker, MoviesService, "Получает сформированные рекомендации")
+
+Rel(PaymentsService, MessageBroker, "Отправляет события о проведении платежей")
+Rel(PaymentsService, DiscountsService, "Получает информацию о скидках")
+Rel(MessageBroker, SubscriptionsService, "Получает информацию о состояниях платежей")
+Rel(MessageBroker, MoviesService, "Получает информацию о подписках пользователей")
+Rel(SubscriptionsService, MessageBroker, "Отправляет информацию о подписках пользователей")
+@enduml

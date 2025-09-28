@@ -21,14 +21,14 @@ spec:
         app: proxy-service
     spec:
       containers:
-      - name: movies-service
+      - name: proxy-service
         image: ghcr.io/suv71/architecture-cinemaabyss/proxy-service:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
         env:
         - name: PORT
-          value: "8081"
+          value: "8000"
         - name: MONOLITH_URL
           valueFrom:
             configMapKeyRef:

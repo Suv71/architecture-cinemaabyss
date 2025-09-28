@@ -22,13 +22,13 @@ spec:
     spec:
       containers:
       - name: events-service
-        image: ghcr.io/Suv71/architecture-cinemaabyss/events-service:cinema
+        image: ghcr.io/suv71/architecture-cinemaabyss/events-service:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8082
         env:
         - name: PORT
-          value: "8081"
+          value: "8082"
         envFrom:
         - configMapRef:
             name: cinemaabyss-config
